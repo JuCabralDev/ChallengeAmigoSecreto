@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorteador de Amigo Secreto</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        input, button {
+            margin: 10px;
+            padding: 5px;
+        }
+        #participantes, #resultado {
+            margin-top: 20px;
+        }
+        #lista-participantes {
+            list-style-type: none;
+            padding: 0;
+        }
+        #lista-participantes li {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sorteador de Amigo Secreto</h1>
+    
+    <div>
+        <input type="text" id="nome" placeholder="Digite um nome">
+        <button onclick="adicionarParticipante()">Adicionar Participante</button>
+    </div>
+    
+    <div id="participantes">
+        <h2>Participantes:</h2>
+        <ul id="lista-participantes"></ul>
+    </div>
+    
+    <button onclick="realizarSorteio()">Realizar Sorteio</button>
+    
+    <div id="resultado"></div>
+
+    <script>
+        let participantes = [];
+
+        function adicionarParticipante() {
+            const nome = document.getElementById('nome').value.trim();
+            if (nome && !participantes.includes(nome)) {
+                participantes.push(nome);
+                atualizarListaParticipantes();
+                document.getElementById('nome').value = '';
+            } else {
+                alert('Por favor, insira um nome válido e não repetido.');
+            }
+        }
+
+        function atualizarListaParticipantes() {
+            const lista = document.getElementById('lista-participantes');
+            lista.innerHTML = '';
+            for (let nome of participantes) {
+                const li = document.createElement('li');
+                li.textContent = nome;
+                lista.appendChild(li);
+            }
+        }
+
+        function realizarSorteio() {
+            if (participantes.length < 2) {
+                alert('É necessário pelo menos 2 participantes para realizar o sorteio.');
+                return;
+            }
+
+            const resultado = document.getElementById('resultado');
+            resultado.innerHTML = '<h2>Resultado do Sorteio:</h2>';
+
+            const sorteio = [...participantes];
+            for (let i = sorteio.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [sorteio[i], sorteio[j]] = [sorteio[j], sorteio[i]];
+            }
+
+            for (let i = 0; i < participantes.length; i++) {
+                const quemTira = participantes[i];
+                const quemFoiTirado = sorteio[(i + 1) % participantes.length];
+                resultado.innerHTML += `<p>${quemTira} tirou ${quemFoiTirado}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>
+
